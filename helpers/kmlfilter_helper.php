@@ -64,13 +64,17 @@ class kmlfilter_helper_Core {
 		}
 		if (isset($url_data['lkey']) AND is_array($url_data['lkey'])) {
 			foreach($url_data['lkey'] as $lkey) {
-				$lid[substr($lkey, 0, strpos($lkey, '_'))] = substr($lkey, 0, strpos($lkey, '_'));
-				self::$lyr[substr($lkey, 0, strpos($lkey, '_'))][] = substr($lkey, strpos($lkey, '_')+1);
+				if(intval($lkey) > 0) {
+					$lid[substr($lkey, 0, strpos($lkey, '_'))] = substr($lkey, 0, strpos($lkey, '_'));
+					self::$lyr[substr($lkey, 0, strpos($lkey, '_'))][] = substr($lkey, strpos($lkey, '_')+1);
+				}
 			}
-			$layers = ORM::factory('layer')->where('layer_visible', 1)->in('id', implode(',', $lid))->find_all();
-			$locSQL = self::layer_polygon($layers, 'i.location_id');
-			if ($locSQL !== false) {
-				array_push($params, $locSQL);
+			if(isset($lid)) {
+				$layers = ORM::factory('layer')->where('layer_visible', 1)->in('id', implode(',', $lid))->find_all();
+				$locSQL = self::layer_polygon($layers, 'i.location_id');
+				if ($locSQL !== false) {
+					array_push($params, $locSQL);
+				}
 			}
 		}
 		return $params;
@@ -132,6 +136,28 @@ class kmlfilter_helper_Core {
 			}
 		}
 		return $locSQL;
+	}
+	
+	public function addlayerfeatures($params = array()) {
+		if(isset($params['layer_id']) && isset($params['content'])) {
+			$xml = simplexml_load_string($params['content']);
+			foreach($xml->Document->Placemark as $key => $placemark) {
+				$placemarkKey = str_replace('#', '', $placemark->styleUrl);
+				$query = http_build_query(array_merge(
+					array(
+						'lkey[]' => $params['layer_id'].'_'.$placemarkKey,
+					),
+					$_GET
+				));
+				$link = url::site('reports/index/?'.$query);
+				if(!$placemark->link) {
+					$placemark->addChild('link', '');
+					$placemark->link = $link;
+				}
+			}
+			$params['content'] = $xml->asXML();
+		}
+		return $params['content'];
 	}
 	
 }

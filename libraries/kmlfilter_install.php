@@ -8,9 +8,8 @@ class Kmlfilter_Install {
 	}
 
 	public function run_install() {
+		$this->db->query('DROP FUNCTION IF EXISTS `myWithin`;');
 		$this->db->query('
-			DELIMITER $$
-			DROP FUNCTION IF EXISTS `myWithin` $$
 			CREATE FUNCTION myWithin(p POINT, poly POLYGON) RETURNS INT(1) DETERMINISTIC
 			BEGIN
 			DECLARE n INT DEFAULT 0;
@@ -44,30 +43,16 @@ class Kmlfilter_Install {
 			SET i = i + 1;
 			END WHILE;
 			RETURN result;
-			END;$$
-			END IF;
-			DELIMITER ;
-		');
+			END;
+			');
 	}
-
-
 	
 	/**
 	 * Function: uninstall
 	 *
-	 * Description: Should uninstall the settings from the DB, but I hate the idea of careless admin
-	 * not knowing that DB deletes are permanent, so right now this does nothing.
-	 *
-	 * Views:
-	 *
-	 * Results: Nothing
 	 */
 	public function uninstall() {
-		$this->db->query('
-					DELIMITER $$
-					DROP FUNCTION IF EXISTS `myWithin` $$
-					DELIMITER ;
-				');
+		$this->db->query('DROP FUNCTION IF EXISTS `myWithin`;');
 	
 	}
 }
