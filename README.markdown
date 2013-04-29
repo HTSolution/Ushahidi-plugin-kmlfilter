@@ -16,3 +16,14 @@ Installation
 ----------------
 *Copy the entire /kmlfilter/ directory into your /plugins/ directory.
 *Activate the plugin.
+
+
+__NOTE: If activating plugin does not show location filter on main page then search for__
+
+	if (layerType !== Ushahidi.KML) {
+	
+and its related
+	
+	}
+	
+code in media/js/ushahidi.js and comment out these two lines

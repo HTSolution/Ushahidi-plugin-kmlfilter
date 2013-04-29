@@ -20,6 +20,10 @@ Installation
 
 __NOTE: If activating plugin does not show location filter on main page then search for__
 
-	`if (layerType !== Ushahidi.KML) {`
+	if (layerType !== Ushahidi.KML) {
 	
-	code in media/js/ushahidi.js and comment it and its closing braces
+and its related
+	
+	}
+	
+code in media/js/ushahidi.js and comment out these two lines
