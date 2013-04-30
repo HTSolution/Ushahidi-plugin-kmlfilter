@@ -2,10 +2,13 @@
 
 class kmlfilter {
 
+	protected static $table_prefix;
+	
 	public function __construct()
 	{
 		// Hook into routing
 		Event::add('system.pre_controller', array($this, 'add'));
+		$this->table_prefix = Kohana::config('database.default.table_prefix');
 	}
 	
 	public function add()
@@ -20,11 +23,11 @@ class kmlfilter {
 			Event::add('ushahidi_action.report_js_filterReportsAction', array($this, '_filter_js'));
 			Event::add('ushahidi_filter.fetch_incidents_set_params', array($this,'_add_kml_filter'));
 			Event::add('ushahidi_filter.layer_features', array($this,'_add_layer_features'));
+			Event::add('ushahidi_filter.timeline_update_query', array($this, '_query_update_timeline'));
 		}
 		if (Router::$controller == 'main' AND Router::$method == 'index') {
 			Event::add('ushahidi_action.main_sidebar_post_filters', array($this,'_main_sidebar_kmlfilter'));
 		}
-		
 		//Event::add('ushahidi_filter.json_replace_markers', _json_replace_markers);
 	}
 
@@ -69,6 +72,24 @@ class kmlfilter {
 		$view->render(true);
 	}
 	
+	public function _query_update_timeline() {
+		$incident_id_in = Event::$data;
+		
+		$paramsArray = kmlfilter_helper::addkmlfilter();
+		if ( ! empty($paramsArray) AND count($paramsArray) > 0) {
+			$returnQuery = '';
+			foreach ($paramsArray as $predicate) {
+				if($returnQuery) $returnQuery .= 'AND ';
+				$returnQuery .= $predicate.' ';
+			}
+			$query = 'SELECT i.id '
+			. 'FROM '.$this->table_prefix.'incident i '
+			. 'WHERE '.$returnQuery;
+			$incident_id_in .= " AND incident.id IN ( $query ) ";
+		}
+		
+		Event::$data = $incident_id_in;
+	}
 	/*public function _json_replace_markers() {
 		$params = Event::$data;
 		Event::$data = kmlfilter_helper::addkmlfilter($params);
