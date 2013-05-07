@@ -6,14 +6,14 @@ author: HTSolution Pvt. Ltd.
 author website: http://himalayantechies.com
 
 == Description ==
-*Adds layer filter to reports index filter page
+Adds layer filter to reports index filter page
 
 == Installation ==
 1. Copy the entire /kmlfilter/ directory into your /plugins/ directory.
 2. Activate the plugin.
 
 __NOTE:__
-*If activating plugin does not show location filter on main page then search for
+i. If activating plugin does not show location filter on main page then search for
 
 	if (layerType !== Ushahidi.KML) {
 	
@@ -23,7 +23,7 @@ and its related
 	
 code in media/js/ushahidi.js and comment out these two lines
 
-*If plugin does not filter timeline by location then search for 
+ii. If plugin does not filter timeline by location then search for 
 	
 	// Fetch the timeline data
 	$query = 'SELECT UNIX_TIMESTAMP('.$select_date_text.') AS time, COUNT(id) AS number '
@@ -31,4 +31,6 @@ code in media/js/ushahidi.js and comment out these two lines
 		. 'WHERE incident_active = 1 '.$incident_id_in.' '
 	. 'GROUP BY '.$groupby_date_text;
 
-in controllers/json.php under function timeline() and add
+in application/controllers/json.php inside function timeline() and above the $query add
+
+	Event::run('ushahidi_filter.timeline_update_query', $incident_id_in);
