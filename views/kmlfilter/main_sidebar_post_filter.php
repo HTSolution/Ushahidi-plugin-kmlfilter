@@ -1,6 +1,8 @@
 <!-- kml layer filters -->
 <script>
+//<![CDATA[
 <?php echo $js; ?>
+//]]>
 </script>
 <div class="cat-filters clearingfix">
 	<strong>

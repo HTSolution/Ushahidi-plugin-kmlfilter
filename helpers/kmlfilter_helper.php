@@ -13,7 +13,9 @@ class kmlfilter_helper_Core {
 	}
 
 	public static function get_layer_tree_view() {
+		$view = new View('kmlfilter/layer_filter');
 		$tree_html = "";
+		$parent_layers = $childrenLayer = array();
 		$layers = ORM::factory('layer')->where('layer_visible', 1)->find_all();
 		foreach($layers as $layer) {
 			$layer_url = $layer->layer_url;
@@ -30,7 +32,10 @@ class kmlfilter_helper_Core {
 				$xml = simplexml_load_string($content);
 	
 				$layer_class = "";
-				$tree_html .= "<li".$layer_class.">"
+				$parent_layers[] = $layer;
+				$childrenLayer[$layer->id] = $xml->Document->Placemark;
+
+				/* $tree_html .= "<li".$layer_class.">"
 				. "<a href=\"#\" class=\"lyr_selected\" id=\"filter_link_lyr_".$layer->id."\" title=\"{$layer->layer_name}\">"
 				. "<span class=\"item-title\">".strip_tags($layer->layer_name)."</span>"
 				. "</a></li>";
@@ -40,11 +45,14 @@ class kmlfilter_helper_Core {
 					. "<a href=\"#\" class=\"lyr_selected\" id=\"filter_link_lyr_".$layer->id."_".str_replace('#', '', $placemark->styleUrl)."\" title=\"{$placemark->description}\">"
 					. "<span class=\"item-title\">".strip_tags($placemark->name)."</span>"
 					. "</a></li>";
-				}
+				} */
 			}
 		}
+		$view->layers = $parent_layers;
+		$view->layerChildrens = $childrenLayer;
+		return $view;
 		// Return
-		return $tree_html;
+// 		return $tree_html;
 	}
 	
 	public function addkmlfilter($params = array()) {
