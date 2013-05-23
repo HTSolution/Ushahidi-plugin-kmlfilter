@@ -3,14 +3,16 @@
 <?php
 foreach($layers as $layer) {
 	echo "<li>";
+	if(isset($layerChildrens[$layer->id])) {
+		echo "<span class=\"ui-icon ui-icon-triangle-1-e\" style=\"float:right;\"></span>";
+	}
 	echo "<a href=\"#\" class=\"lyr_selected\" id=\"filter_link_lyr_".$layer->id."\" title=\"{$layer->layer_name}\">"
 			. "<span>".strip_tags($layer->layer_name)."</span>"
 		. "</a>";
-		echo "<div id=\"filter_link_lyr_child_".$layer->id."\" class=\"hide\"><ul>";
+		echo "<div id=\"filter_child_link_lyr_".$layer->id."\" class=\"hide\"><ul>";
 			if(isset($layerChildrens[$layer->id])) {
 				foreach($layerChildrens[$layer->id] as $placemark) {
-					$layer_class = " class=\"report-listing-category-child\"";
-					echo "<li".$layer_class.">"
+					echo "<li class=\"report-listing-category-child\">"
 					. "<a href=\"#\" class=\"lyr_selected\" id=\"filter_link_lyr_".$layer->id."_".str_replace('#', '', $placemark->styleUrl)."\" title=\"{$placemark->description}\">"
 					. "<span>".strip_tags($placemark->name)."</span>"
 					. "</a></li>";
@@ -21,3 +23,8 @@ foreach($layers as $layer) {
 }
 ?>
 <!-- / layer filters -->
+<script type="text/javascript">
+//<![CDATA[
+<?php echo $js; ?>
+//]]>
+</script>

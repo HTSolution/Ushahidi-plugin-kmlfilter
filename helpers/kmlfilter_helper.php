@@ -50,6 +50,7 @@ class kmlfilter_helper_Core {
 		}
 		$view->layers = $parent_layers;
 		$view->layerChildrens = $childrenLayer;
+		$view->js = new View('kmlfilter/layer_filter_js');
 		return $view;
 		// Return
 // 		return $tree_html;
