@@ -29,6 +29,7 @@ class kmlfilter {
 			Event::add('ushahidi_filter.timeline_update_query', array($this, '_query_update_timeline'));
 		}
 		if (Router::$controller == 'main' AND Router::$method == 'index') {
+			Event::add('ushahidi_action.header_scripts', array($this, '_add_header_style'));
 			Event::add('ushahidi_action.main_sidebar_post_filters', array($this,'_main_sidebar_kmlfilter'));
 		}
 		//Event::add('ushahidi_filter.json_replace_markers', _json_replace_markers);
@@ -38,6 +39,11 @@ class kmlfilter {
 		$view = new View('kmlfilter/report_filter_header_js');
 		$view->selected_layers = implode(",", $this->_get_layers());
 		//$view->selected_layers = $this->_get_layers();
+		$view->render(true);
+	}
+	
+	public function _add_header_style() {
+		$view = new View('kmlfilter/prev_layer_remove_style');
 		$view->render(true);
 	}
 	

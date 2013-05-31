@@ -158,6 +158,10 @@ class kmlfilter_helper_Core {
 					),
 					$_GET
 				));
+				if($placemark->name) {
+					$filterLink = '<span class = "mapkmlfilter_switch" style="font-weight: normal; font-size: .8em; margin-left: 10px;" onclick=triggerkmlfilter("'.$params['layer_id'].'_'.$placemarkKey.'");>( Filter )</span>';
+					$placemark->name = $placemark->name.$filterLink;
+				}
 				$link = url::site('reports/index/?'.$query);
 				if(!$placemark->link) {
 					$placemark->addChild('link', '');
