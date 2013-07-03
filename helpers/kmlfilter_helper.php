@@ -42,7 +42,7 @@ class kmlfilter_helper_Core {
 				foreach($xml->Document->Placemark as $placemark) {
 					$layer_class = " class=\"report-listing-category-child\"";
 					$tree_html .= "<li".$layer_class.">"
-					. "<a href=\"#\" class=\"lyr_selected\" id=\"filter_link_lyr_".$layer->id."_".$placemark->ID."\" title=\"{$placemark->description}\">"
+					. "<a href=\"#\" class=\"lyr_selected\" id=\"filter_link_lyr_".$layer->id."_".str_replace('#', '', $placemark->styleUrl)."\" title=\"{$placemark->description}\">"
 					. "<span class=\"item-title\">".strip_tags($placemark->name)."</span>"
 					. "</a></li>";
 				} */
@@ -125,9 +125,8 @@ class kmlfilter_helper_Core {
 			$xml = simplexml_load_string($content);
 			foreach($xml->Document->Placemark as $placemark) {
 				$poly_cor = false;
-				if(in_array($placemark->ID, self::$lyr[$layer->id])) {
+				if(in_array(str_replace('#', '', $placemark->styleUrl), self::$lyr[$layer->id])) {
 					$cord = strval($placemark->MultiGeometry->Polygon->outerBoundaryIs->LinearRing->coordinates);
-					$cord = str_replace(" ", "\n", $cord);
 					$cords = explode("\n", $cord);
 					foreach($cords as $key => $cordinate) {
 						$cor = explode(',', $cordinate);
@@ -152,7 +151,7 @@ class kmlfilter_helper_Core {
 		if(isset($params['layer_id']) && isset($params['content'])) {
 			$xml = simplexml_load_string($params['content']);
 			foreach($xml->Document->Placemark as $key => $placemark) {
-				$placemarkKey = str_replace('#', '', $placemark->ID);
+				$placemarkKey = str_replace('#', '', $placemark->styleUrl);
 				$query = http_build_query(array_merge(
 					array(
 						'lkey[]' => $params['layer_id'].'_'.$placemarkKey,
