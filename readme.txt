@@ -7,10 +7,15 @@ author website: http://himalayantechies.com
 
 == Description ==
 *Adds layer filter to reports index filter page
+*KML file will require some changes
+*If want don't want to work on KML file then prefer another branch (gadm) with KML files from 
+	http://www.gadm.org
+
 
 == Installation ==
 1. Copy the entire /kmlfilter/ directory into your /plugins/ directory.
-2. Activate the plugin.
+2. Convert KML file in format mentioned on NOTE
+3. Activate the plugin
 
 __NOTE:__
 1. KML file requires 
