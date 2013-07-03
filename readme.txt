@@ -7,13 +7,41 @@ author website: http://himalayantechies.com
 
 == Description ==
 Adds layer filter to reports index filter page
+Reference for KML files http://www.gadm.org
+For your own KML file to work refer to another branch (master)
 
 == Installation ==
 1. Copy the entire /kmlfilter/ directory into your /plugins/ directory.
 2. Activate the plugin.
 
 __NOTE:__
-i. If activating plugin does not show location filter on main page then search for
+i KML file requires 
+
+	<Placemark>
+		<styleUrl></styleUrl>
+	</Placemark>
+	
+	tag with unique id inside <styleUrl></styleUrl> for each <Placemark>
+	and coordinates should be in format
+
+	<Placemark>
+		<MultiGeometry>
+			<Polygon>
+				<outerBoundaryIs>
+					<LinearRing>
+						<coordinates>
+						</coordinates>
+					</LinearRing>
+				</outerBoundaryIs>
+			</Polygon>
+		</MultiGeometry>
+	</Placemark>
+
+ii. You can get KML files from 
+
+	http://www.gadm.org
+	
+iii. If activating plugin does not show location filter on main page then search for
 
 	if (layerType !== Ushahidi.KML) {
 	
@@ -23,7 +51,7 @@ and its related
 	
 code in media/js/ushahidi.js and comment out these two lines
 
-ii. If plugin does not filter timeline by location then search for 
+iv. If plugin does not filter timeline by location then search for 
 	
 	// Fetch the timeline data
 	$query = 'SELECT UNIX_TIMESTAMP('.$select_date_text.') AS time, COUNT(id) AS number '
