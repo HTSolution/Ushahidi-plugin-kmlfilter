@@ -19,11 +19,15 @@ class kmlfilter {
 		if (Router::$controller == 'reports' AND Router::$method == 'index') {
 			Event::add('ushahidi_action.report_filters_ui', array($this, '_filter_ui'));
 			Event::add('ushahidi_action.report_js_filterReportsAction', array($this, '_filter_js'));
+			Event::add('ushahidi_action.report_js_filterReportsActionRemove', array($this, '_remove_filter_js'));
+			Event::add('ushahidi_action.report_js_keyToFilter', array($this, '_report_js_keyToFilter'));
 			Event::add('ushahidi_filter.fetch_incidents_set_params', array($this,'_add_kml_filter'));
 			Event::add('ushahidi_filter.layer_features', array($this,'_add_layer_features'));
+			
 			//plugin::add_stylesheet('downloadreports/views/css/download_reports');
 		} else {
 			Event::add('ushahidi_action.report_js_filterReportsAction', array($this, '_filter_js'));
+			Event::add('ushahidi_action.report_js_filterReportsActionRemove', array($this, '_remove_filter_js'));
 			Event::add('ushahidi_filter.fetch_incidents_set_params', array($this,'_add_kml_filter'));
 			Event::add('ushahidi_filter.layer_features', array($this,'_add_layer_features'));
 			Event::add('ushahidi_filter.timeline_update_query', array($this, '_query_update_timeline'));
@@ -36,7 +40,7 @@ class kmlfilter {
 	}
 
 	public function _add_report_filter_js() {
-		$view = new View('kmlfilter/report_filter_header_js');
+		$view = View::factory('kmlfilter/report_filter_header_js');
 		$view->selected_layers = implode(",", $this->_get_layers());
 		//$view->selected_layers = $this->_get_layers();
 		$view->render(true);
@@ -47,9 +51,22 @@ class kmlfilter {
 		$view->render(true);
 	}
 	
+	/*
+	* Add appropriate filter logic for reports page
+	*/
 	public function _filter_js() {
 		$view = new View('kmlfilter/report_filter_js');
 		$view->render(true);
+	}
+
+
+	/*
+	* Remove appropriate filter logic for reports page
+	*/
+	public function _remove_filter_js()
+	{
+		$filter_js = View::factory('kmlfilter/report_filter_remove_js');
+		$filter_js->render(TRUE);
 	}
 	
 	public function _filter_ui() {
@@ -66,9 +83,21 @@ class kmlfilter {
 		$params = Event::$data;
 		Event::$data = kmlfilter_helper::addlayerfeatures($params);
 	}
+
+
+		
+	/*
+	* Remove appropriate filter logic for reports page
+	*/
+	public function _report_js_keyToFilter()
+	{
+		$filter_js = View::factory('kmlfilter/kml_filter_key_to_filter_js');
+		$filter_js->render(TRUE);
+	}
+	
 	
 	public function _main_sidebar_kmlfilter() {
-		$view = new View('kmlfilter/main_sidebar_post_filter');
+		$view = View::factory('kmlfilter/main_sidebar_post_filter');
 		$layers = array();
 		$config_layers = Kohana::config('map.layers'); // use config/map layers if set
 		if ($config_layers == $layers) {
@@ -82,7 +111,7 @@ class kmlfilter {
 		{
 			$layers = $config_layers;
 		}
-		$jsFile = new View('kmlfilter/main_sidebar_js');
+		$jsFile = View::factory('kmlfilter/main_sidebar_js');
 		$view->js = $jsFile;
 		$view->kmlfilterlayers = $layers;
 		$view->render(true);
