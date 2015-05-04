@@ -1,7 +1,9 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 ?>
 <h3>
-	<a href="#" class="small-link-button f-clear reset" onclick="removeParameterKey('lkey', 'fl-layers');"><?php echo Kohana::lang('ui_main.clear')?></a>
+	<a href="#" class="small-link-button f-clear reset" onclick="removeParameterKey('lkey', 'fl-layers');">
+		<?php echo Kohana::lang('ui_main.clear')?>
+	</a>
 	<a class="f-title" href="#"><?php echo Kohana::lang('kml_filter.layer')?></a>
 </h3>
 <div class="f-layer-box">

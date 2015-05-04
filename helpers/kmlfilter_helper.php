@@ -13,7 +13,7 @@ class kmlfilter_helper_Core {
 	}
 
 	public static function get_layer_tree_view() {
-		$view = new View('kmlfilter/layer_filter');
+		$view = View::factory('kmlfilter/layer_filter');
 		$tree_html = "";
 		$parent_layers = $childrenLayer = array();
 		$layers = ORM::factory('layer')->where('layer_visible', 1)->find_all();
@@ -50,7 +50,7 @@ class kmlfilter_helper_Core {
 		}
 		$view->layers = $parent_layers;
 		$view->layerChildrens = $childrenLayer;
-		$view->js = new View('kmlfilter/layer_filter_js');
+		$view->js = View::factory('kmlfilter/layer_filter_js');
 		return $view;
 		// Return
 // 		return $tree_html;

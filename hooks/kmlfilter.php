@@ -28,6 +28,7 @@ class kmlfilter {
 		} else {
 			Event::add('ushahidi_action.report_js_filterReportsAction', array($this, '_filter_js'));
 			Event::add('ushahidi_action.report_js_filterReportsActionRemove', array($this, '_remove_filter_js'));
+			Event::add('ushahidi_action.report_js_keyToFilter', array($this, '_report_js_keyToFilter'));
 			Event::add('ushahidi_filter.fetch_incidents_set_params', array($this,'_add_kml_filter'));
 			Event::add('ushahidi_filter.layer_features', array($this,'_add_layer_features'));
 			Event::add('ushahidi_filter.timeline_update_query', array($this, '_query_update_timeline'));
