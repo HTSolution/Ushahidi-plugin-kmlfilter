@@ -5,10 +5,23 @@ class Kmlfilter_Install {
 
 	public function __construct() {
 		$this->db = Database::instance();
+		$this->placemark_table = Kohana::config('database.default.table_prefix')."placemark";
 	}
 
 	public function run_install() {
 		$this->db->query('DROP FUNCTION IF EXISTS `myWithin`;');
+		$this->db->query('
+			CREATE TABLE IF NOT EXISTS `'.$this->placemark_table.'` (
+				`id` int(11) NOT NULL,
+				`layer_id` int(11) NOT NULL,
+				`placemark` varchar(255) DEFAULT NULL,
+				`coord` longtext
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			ALTER TABLE `'.$this->placemark_table.'`
+				 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+			ALTER TABLE `'.$this->placemark_table.'`
+				ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `layer_placemark_id` (`layer_id`,`placemark`);'
+  		);
 		$this->db->query('
 			CREATE FUNCTION myWithin(p POINT, poly POLYGON) RETURNS INT(1) DETERMINISTIC
 			BEGIN
@@ -44,6 +57,12 @@ class Kmlfilter_Install {
 			END WHILE;
 			RETURN result;
 			END;
+			');
+			$db->query('
+				CREATE view vw_placemark AS 
+				SELECT l.id AS location_id, p.id AS placemark_id, CONCAT(p.layer_id, "_", p.placemark) AS lkey 
+				FROM location l, placemark p 
+				WHERE myWithin(PointFromText(CONCAT( "POINT(", l.latitude, " ", l.longitude, ")" )), PolyFromText(CONCAT("POLYGON((", p.coord, "))")))
 			');
 	}
 	
